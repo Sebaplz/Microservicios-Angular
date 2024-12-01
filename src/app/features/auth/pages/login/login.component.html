@@ -1,36 +1,48 @@
 <main class="min-h-screen flex flex-col justify-content-center align-items-center">
-  <div class="card p-4">
+  <div class="card p-4 w-30rem">
     <div class="flex flex-column md:flex-row">
 
       <!-- Login Section -->
       <div class="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4 w-full">
           <div class="flex flex-wrap justify-content-center align-items-center gap-2">
-            <label for="email" class="w-6rem">Email</label>
-            <input
-              pInputText
-              id="email"
-              type="text"
-              class="w-12rem"
-              formControlName="email"
-              placeholder="Enter email"
-            />
-
+            <p-floatLabel>
+              <input
+                pInputText
+                id="email"
+                type="text"
+                class="w-12rem"
+                formControlName="email"
+               />
+              <label for="email">Email</label>
+            </p-floatLabel>
+            <small class="text-red-500 capitalize" *ngIf="loginForm.get('email')?.touched">
+              {{ getErrorMessage('email') }}
+            </small>
           </div>
           <div class="flex flex-wrap justify-content-center align-items-center gap-2">
-            <label for="password" class="w-6rem">Password</label>
-            <input
-              pInputText
-              id="password"
-              type="password"
-              class="w-12rem"
-              formControlName="password"
-              placeholder="Enter password"
-            />
-
+            <p-floatLabel>
+              <input
+                pInputText
+                id="password"
+                type="password"
+                class="w-12rem"
+                formControlName="password"
+                />
+              <label for="password">Password</label>
+            </p-floatLabel>
+            <small class="text-red-500 capitalize" *ngIf="loginForm.get('password')?.touched">
+              {{ getErrorMessage('password') }}
+            </small>
           </div>
-          <p-button type="submit" label="Login" icon="pi pi-user" styleClass="w-10rem mx-auto" />
-          <p>Form Status: {{ loginForm.status }}</p>
+          <div class="flex justify-content-center align-items-center gap-2">
+            <p-button
+              type="submit"
+              label="Login"
+              icon="pi pi-user"
+              styleClass="w-10rem mx-auto"
+              [disabled]="loginForm.invalid"/>
+          </div>
         </form>
       </div>
 
@@ -47,8 +59,8 @@
       <!-- Sign-Up Section -->
       <div class="w-full md:w-5 flex align-items-center justify-content-center py-5">
         <div class="flex flex-column gap-4 align-items-center">
-          <p-button label="Sign Up" icon="pi pi-user-plus" styleClass="p-button-success w-10rem" (click)="onSignUp()" />
-          <p-button routerLink="/" label="Back to home" icon="pi pi-home" styleClass="p-button-info w-12rem" />
+          <p-button label="Sign Up" icon="pi pi-user-plus" styleClass="p-button-success w-10rem" (click)="onSignUp()"/>
+          <p-button routerLink="/" label="Back to home" icon="pi pi-home" styleClass="p-button-info w-12rem"/>
         </div>
       </div>
     </div>
