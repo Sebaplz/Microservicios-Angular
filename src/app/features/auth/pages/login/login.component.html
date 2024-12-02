@@ -43,6 +43,7 @@
               styleClass="w-10rem mx-auto"
               [disabled]="loginForm.invalid"/>
           </div>
+          <small class="text-red-500" *ngIf="errorMessage">{{errorMessage}}</small>
         </form>
       </div>
 

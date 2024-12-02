@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {DividerModule} from 'primeng/divider';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
@@ -8,6 +8,8 @@ import {CommonModule} from '@angular/common';
 import {MessagesModule} from 'primeng/messages';
 import {FloatLabelModule} from 'primeng/floatlabel';
 import {MessageModule} from 'primeng/message';
+import {AuthService} from '../../../../core/services/auth.service';
+import {UserCredentials} from '../../../../core/interfaces/auth.interface';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +20,9 @@ import {MessageModule} from 'primeng/message';
 })
 export class LoginComponent {
   private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  errorMessage: string = '';
 
   /** Login form group */
   loginForm = this.formBuilder.group({
@@ -49,17 +54,18 @@ export class LoginComponent {
     return '';
   }
 
-  /**
-   * Handles the login form submission
-   */
+  /** Handles the login form submission */
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      const {email, password} = this.loginForm.value;
-      console.log('Login credentials:', {email, password});
-      // Redirect or handle successful login here
-    } else {
-      this.loginForm.markAllAsTouched();
-    }
+    const credentials = this.loginForm.value as UserCredentials;
+    this.authService.login(credentials).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'Error al iniciar sesión. Por favor, verifica tus credenciales.';
+      },
+    });
   }
 
   /** Handles the sign-up form submission */

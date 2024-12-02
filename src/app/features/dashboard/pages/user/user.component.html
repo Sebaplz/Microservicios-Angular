@@ -1,1 +1,36 @@
-<p>user works!</p>
+<div class="card">
+  <p-table
+    [value]="products"
+    [paginator]="true"
+    [rows]="rows"
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    [loading]="loading"
+    [rowHover]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+    [globalFilterFields]="['name', 'description', 'category']"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Stock</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.price | currency }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.stock }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      Total Products: {{ totalRecords }}
+    </ng-template>
+  </p-table>
+</div>
