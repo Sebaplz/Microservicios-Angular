@@ -2,6 +2,10 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface RegisterResponse {
+  message: string;
+}
+
 export interface UserCredentials {
   email: string;
   password: string;

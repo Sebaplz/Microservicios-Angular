@@ -67,11 +67,4 @@ export class LoginComponent {
       },
     });
   }
-
-  /** Handles the sign-up form submission */
-  onSignUp(): void {
-    // Handle sign-up navigation or logic
-    console.log('Redirecting to sign-up...');
-    /*this.router.navigate(['/auth/register']);*/
-  }
 }

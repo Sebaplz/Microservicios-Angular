@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, map, Observable, tap, throwError} from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { AuthResponse, UserCredentials, JwtPayload } from '../interfaces/auth.interface';
+import {AuthResponse, UserCredentials, JwtPayload, RegisterResponse} from '../interfaces/auth.interface';
 import {environment} from '../../../environments/environment';
 
 @Injectable({
@@ -51,9 +51,14 @@ export class AuthService {
     );
   }
 
-  register(credentials: UserCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, credentials);
+  register(credentials: UserCredentials): Observable<RegisterResponse> {
+    return this.http.post(`${this.API_URL}/auth/register`, credentials, { responseType: 'text' }).pipe(
+      map((response: string) => {
+        return { message: response } as RegisterResponse;
+      })
+    );
   }
+
 
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
