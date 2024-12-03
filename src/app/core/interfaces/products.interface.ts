@@ -13,3 +13,7 @@ export interface ProductsResponse {
   page: number;
   limit: number;
 }
+
+export interface DeleteProductResponse {
+  text: string;
+}

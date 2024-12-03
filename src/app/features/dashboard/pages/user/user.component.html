@@ -1,36 +1,67 @@
-<div class="card">
-  <p-table
-    [value]="products"
-    [paginator]="true"
-    [rows]="rows"
-    [totalRecords]="totalRecords"
-    [lazy]="true"
-    [loading]="loading"
-    [rowHover]="true"
-    (onLazyLoad)="onLazyLoad($event)"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-    [globalFilterFields]="['name', 'description', 'category']"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Category</th>
-        <th>Stock</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-product>
-      <tr>
-        <td>{{ product.name }}</td>
-        <td>{{ product.description }}</td>
-        <td>{{ product.price | currency }}</td>
-        <td>{{ product.category }}</td>
-        <td>{{ product.stock }}</td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="summary">
-      Total Products: {{ totalRecords }}
-    </ng-template>
-  </p-table>
-</div>
+@if(loading){
+  <div class="card flex min-h-screen justify-content-center align-items-center">
+    <p-progressSpinner ariaLabel="loading" />
+  </div>
+} @else {
+  <app-navbar/>
+  <div class="card w-full mx-auto lg:w-9">
+    <p-table
+      #dtproducts
+      [value]="products"
+      [paginator]="true"
+      [rows]="10"
+      [loading]="loading"
+      [globalFilterFields]="['name']"
+      [showCurrentPageReport]="true"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input
+              pInputText
+              type="text"
+              (input)="dtproducts.filterGlobal($any($event.target).value, 'contains')"
+              placeholder="Search Product by Name"/>
+          </p-iconField>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">Name
+            <p-sortIcon field="name"></p-sortIcon>
+          <th>Description</th>
+          <th pSortableColumn="price">Price
+            <p-sortIcon field="price"></p-sortIcon>
+          </th>
+          <th pSortableColumn="category">Category
+            <p-sortIcon field="category"></p-sortIcon>
+          </th>
+          <th pSortableColumn="stock">Stock
+            <p-sortIcon field="stock"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.price | currency:'CLP':'symbol-narrow':'1.0-0' }}</td>
+          <td>{{ product.category }}</td>
+          <td>
+            <p-tag [severity]="getSeverity(product.stock)">
+              {{ product.stock }}
+            </p-tag>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        Total Products: {{ totalRecords }}
+      </ng-template>
+    </p-table>
+  </div>
+}

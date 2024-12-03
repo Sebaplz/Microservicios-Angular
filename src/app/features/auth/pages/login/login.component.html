@@ -5,7 +5,7 @@
       <!-- Login Section -->
       <div class="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4 w-full">
-          <div class="flex flex-wrap justify-content-center align-items-center gap-2">
+          <div class="flex flex-column justify-content-center align-items-center gap-2">
             <p-floatLabel>
               <input
                 pInputText
@@ -20,7 +20,7 @@
               {{ getErrorMessage('email') }}
             </small>
           </div>
-          <div class="flex flex-wrap justify-content-center align-items-center gap-2">
+          <div class="flex flex-column justify-content-center align-items-center gap-2">
             <p-floatLabel>
               <input
                 pInputText

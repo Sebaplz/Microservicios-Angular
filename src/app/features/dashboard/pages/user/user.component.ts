@@ -1,24 +1,31 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ProductsService } from '../../../../core/services/products.service';
-import { Product } from '../../../../core/interfaces/products.interface';
-import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
+import {Component, inject, OnInit} from '@angular/core';
+import {Product} from '../../../../core/interfaces/products.interface';
+import {CurrencyPipe, NgIf} from '@angular/common';
+import {IconFieldModule} from 'primeng/iconfield';
+import {InputIconModule} from 'primeng/inputicon';
+import {InputTextModule} from 'primeng/inputtext';
+import {NavbarComponent} from '../../../../components/navbar/navbar.component';
+import {PrimeTemplate} from 'primeng/api';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {TableModule} from 'primeng/table';
+import {TagModule} from 'primeng/tag';
+import {ProductUtilsService} from '../../../../core/services/product-utils.service';
 
 @Component({
-  selector: 'app-user',
-  standalone: true,
+  selector: 'app-user-dashboard',
+  imports: [CurrencyPipe, IconFieldModule, InputIconModule, InputTextModule, NavbarComponent, NgIf, PrimeTemplate, ProgressSpinnerModule, TableModule, TagModule],
   templateUrl: './user.component.html',
-  imports: [CommonModule, TableModule],
   styleUrls: ['./user.component.scss'],
+  standalone: true
 })
 export class UserComponent implements OnInit {
-  private productsService = inject(ProductsService);
+  private productUtilsService = inject(ProductUtilsService);
 
   products: Product[] = [];
   loading: boolean = false;
-  totalRecords: number = 0; // Total de productos
-  rows: number = 10; // Productos por página
-  page: number = 1; // Página actual (1-based)
+  totalRecords: number = 0;
+  rows: number = 100;
+  page: number = 1;
 
   ngOnInit() {
     this.loadProducts(this.page, this.rows);
@@ -26,10 +33,10 @@ export class UserComponent implements OnInit {
 
   loadProducts(page: number, rows: number) {
     this.loading = true;
-    this.productsService.getProducts(page, rows).subscribe({
+    this.productUtilsService.loadProducts(page, rows).subscribe({
       next: (response) => {
-        this.products = response.data; // Datos de productos
-        this.totalRecords = response.total; // Total de productos del backend
+        this.products = response.data;
+        this.totalRecords = response.total;
         this.loading = false;
       },
       error: () => {
@@ -39,9 +46,7 @@ export class UserComponent implements OnInit {
     });
   }
 
-  onLazyLoad(event: any) {
-    const page = Math.floor(event.first / event.rows) + 1; // Calcular página (1-based)
-    const rows = event.rows; // Tamaño de la página
-    this.loadProducts(page, rows);
+  getSeverity(stock: number) {
+    return this.productUtilsService.getSeverity(stock);
   }
 }
