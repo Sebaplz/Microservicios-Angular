@@ -1,1 +1,83 @@
-<p>admin works!</p>
+<app-navbar/>
+<app-orders/>
+<div class="card w-full h-full lg:w-9 mx-auto">
+  <p-table
+    #dtproducts
+    [value]="products"
+    [paginator]="true"
+    [rows]="5"
+    [loading]="loading"
+    [globalFilterFields]="['name']"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex justify-content-between align-items-center">
+        <p-button icon="pi pi-plus" class="mr-2"/>
+        <p-iconField iconPosition="left" class="ml-auto">
+          <p-inputIcon>
+            <i class="pi pi-search"></i>
+          </p-inputIcon>
+          <input
+            pInputText
+            type="text"
+            (input)="dtproducts.filterGlobal($any($event.target).value, 'contains')"
+            placeholder="Search Product by Name"/>
+        </p-iconField>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">Name
+          <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th>Description</th>
+        <th pSortableColumn="price">Price
+          <p-sortIcon field="price"></p-sortIcon>
+        </th>
+        <th pSortableColumn="category">Category
+          <p-sortIcon field="category"></p-sortIcon>
+        </th>
+        <th pSortableColumn="stock">Stock
+          <p-sortIcon field="stock"></p-sortIcon>
+        </th>
+        <th class="pl-5">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.price | currency: 'CLP':'symbol-narrow':'1.0-0' }}</td>
+        <td>{{ product.category }}</td>
+        <td>
+          <p-tag [severity]="getSeverity(product.stock)">
+            {{ product.stock }}
+          </p-tag>
+        </td>
+        <td class="flex gap-2">
+          <p-button
+            icon="pi pi-pencil"
+            [rounded]="true"
+            [outlined]="true"
+            severity="success"
+            (onClick)="editProduct(product)" />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [rounded]="true"
+            [outlined]="true"
+            (onClick)="deleteProduct(product)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ products ? products.length : 0 }} products.
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog position="center"></p-confirmDialog>
