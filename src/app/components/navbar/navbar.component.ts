@@ -1,8 +1,10 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {MenuModule} from 'primeng/menu';
 import {Button} from 'primeng/button';
 import {AuthService} from '../../core/services/auth.service';
 import {TabMenuModule} from 'primeng/tabmenu';
+import {Observable} from "rxjs";
+import {AsyncPipe} from "@angular/common";
 
 @Component({
   selector: 'app-navbar',
@@ -10,14 +12,24 @@ import {TabMenuModule} from 'primeng/tabmenu';
   imports: [
     MenuModule,
     Button,
-    TabMenuModule
+    TabMenuModule,
+    AsyncPipe,
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent{
   private authService = inject(AuthService);
-  isLoggedIn: true | false = false;
+  email$: Observable<string | null>;
+  isAuthenticated$: Observable<boolean>;
+  isAdmin$: Observable<boolean>;
+
+  constructor() {
+    this.email$ = this.authService.selectUserEmail();
+    this.isAuthenticated$ = this.authService.selectIsAuthenticated();
+    this.isAdmin$ = this.authService.selectIsAdmin();
+  }
+
 
   logout() {
     this.authService.logout();

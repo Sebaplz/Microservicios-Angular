@@ -31,7 +31,7 @@ export class RegisterComponent {
   /** Register form group */
   registerForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
     confirmPassword: ['', [Validators.required]]
   });
 
@@ -54,6 +54,11 @@ export class RegisterComponent {
     if (field === 'password' && control?.hasError('minlength')) {
       const requiredLength = control.getError('minlength')?.requiredLength;
       return `Password must be at least ${requiredLength} characters long.`;
+    }
+
+    if (field === 'password' && control?.hasError('maxlength')) {
+      const requiredLength = control.getError('maxlength')?.requiredLength;
+      return `Password must be at most ${requiredLength} characters long.`;
     }
 
     if (field === 'confirmPassword' && control?.value !== this.registerForm.get('password')?.value) {

@@ -3,7 +3,7 @@
     <ng-template pTemplate="title">
       <div class="card-header flex justify-content-between">
         <span>Orders</span>
-        <p-button icon="pi pi-shopping-cart" severity="success" ></p-button>
+        <p-button icon="pi pi-list" severity="info" ></p-button>
       </div>
     </ng-template>
     <ng-template pTemplate="content">
@@ -12,7 +12,7 @@
       </div>
     </ng-template>
   </p-card>
-  <p-card class="">
-    <p-chart type="doughnut" [data]="chartData" [options]="chartOptions"></p-chart>
+  <p-card header="Orders" class="text-center">
+    <p-chart  type="doughnut" [data]="chartData" [options]="chartOptions"></p-chart>
   </p-card>
 </section>

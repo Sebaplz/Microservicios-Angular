@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, catchError, map, Observable, tap, throwError} from 'rxjs';
-import { Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
-import {AuthResponse, UserCredentials, JwtPayload, RegisterResponse} from '../interfaces/auth.interface';
+import {Injectable} from '@angular/core';
+import {catchError, map, Observable, throwError} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {AuthState} from '../../store/auth/auth.state';
+import {AuthResponse, RegisterResponse, UserCredentials} from '../interfaces/auth.interface';
+import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
+import {tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,37 +14,32 @@ import {environment} from '../../../environments/environment';
 export class AuthService {
   private readonly TOKEN_KEY = 'token';
   private readonly API_URL = environment.apiUrl;
-  private userEmail = new BehaviorSubject<string | null>(null);
 
   constructor(
+    private store: Store<{ auth: AuthState }>,
     private http: HttpClient,
-    private router: Router,
-  ) {
-    this.checkToken();
+    private router: Router)
+  {}
+
+  // Selector para obtener el email
+  selectUserEmail(): Observable<string | null> {
+    return this.store.select(state => state.auth.user?.email || null);
   }
 
-  private checkToken() {
-    const token = localStorage.getItem(this.TOKEN_KEY);
-    if (token) {
-      try {
-        const decodedToken = jwtDecode<JwtPayload>(token);
-        if (decodedToken.exp * 1000 > Date.now()) {
-          this.userEmail.next(decodedToken.email);
-        } else {
-          this.logout();
-        }
-      } catch {
-        this.logout();
-      }
-    }
+  // Selector para verificar si está autenticado
+  selectIsAuthenticated(): Observable<boolean> {
+    return this.store.select(state => !!state.auth.user);
+  }
+
+  // Selector para verificar si es admin
+  selectIsAdmin(): Observable<boolean> {
+    return this.store.select(state => !!state.auth.user?.isAdmin);
   }
 
   login(credentials: UserCredentials): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap(response => {
         localStorage.setItem(this.TOKEN_KEY, response.token);
-        const decodedToken = jwtDecode<JwtPayload>(response.token);
-        this.userEmail.next(decodedToken.email);
       }),
       catchError(error => {
         // Puedes personalizar el mensaje aquí si es necesario
@@ -59,23 +56,9 @@ export class AuthService {
     );
   }
 
-
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
-    this.userEmail.next(null);
     this.router.navigate(['/auth/login']);
-  }
-
-  isAuthenticated(): boolean {
-    const token = localStorage.getItem(this.TOKEN_KEY);
-    if (!token) return false;
-
-    try {
-      const decodedToken = jwtDecode<JwtPayload>(token);
-      return decodedToken.exp * 1000 > Date.now();
-    } catch {
-      return false;
-    }
   }
 
   getToken(): string | null {

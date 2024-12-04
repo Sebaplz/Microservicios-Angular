@@ -14,11 +14,22 @@
       [globalFilterFields]="['name']"
       [showCurrentPageReport]="true"
       [tableStyle]="{ 'min-width': '75rem' }"
+      [rowsPerPageOptions]="[10, 25, 50, 100]"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     >
       <ng-template pTemplate="caption">
-        <div class="flex">
-          <p-iconField iconPosition="left" class="ml-auto">
+        <div class="flex flex-wrap justify-content-end gap-2">
+          <p-iconField iconPosition="left">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input
+              pInputText
+              type="text"
+              (input)="dtproducts.filter($any($event.target).value, 'category', 'contains')"
+              placeholder="Search by Category"/>
+          </p-iconField>
+          <p-iconField iconPosition="left">
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
@@ -26,7 +37,7 @@
               pInputText
               type="text"
               (input)="dtproducts.filterGlobal($any($event.target).value, 'contains')"
-              placeholder="Search Product by Name"/>
+              placeholder="Search by Name"/>
           </p-iconField>
         </div>
       </ng-template>

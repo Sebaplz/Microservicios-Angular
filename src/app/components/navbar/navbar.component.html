@@ -1,24 +1,28 @@
 <header class="flex justify-content-between align-items-center mx-2 lg:w-9 lg:mx-auto">
-  <h1 class="text-2xl font-bold">Microservicios</h1>
+  <h1 class="text-2xl font-bold">Microservices dashboard</h1>
   <nav>
     <ul class="flex gap-4 list-none">
-      <li>
-        <a routerLink="/">
-          <p-button routerLink="/" icon="pi pi-home"></p-button>
-        </a>
-      </li>
-      <li>
-        @if (!isLoggedIn) {
-          <a routerLink="/auth/login">
-            <p-button routerLink="/auth/login" icon="pi pi-sign-in"></p-button>
-          </a>
+      @if(isAuthenticated$  | async) {
+        <li><p>Welcome, {{ email$ | async }}</p></li>
+        @if(isAdmin$ | async) {
+          <li><p>You are an admin</p></li>
         } @else {
-          <a routerLink="/cart">
-            <p-button routerLink="/cart" icon="pi pi-shopping-cart"></p-button>
-          </a>
+          <li><p>You are not an admin</p></li>
         }
-      </li>
-
+        <li>
+          <p-button routerLink="/" icon="pi pi-home"></p-button>
+        </li>
+        <li>
+          <p-button routerLink="/cart" icon="pi pi-shopping-cart" severity="success"></p-button>
+        </li>
+        <li>
+          <p-button routerLink="/auth/login" icon="pi pi-sign-out" severity="danger" (click)="logout()"></p-button>
+        </li>
+      } @else {
+        <li>
+          <p-button routerLink="/auth/login" icon="pi pi-sign-in" severity="success"></p-button>
+        </li>
+      }
     </ul>
   </nav>
 </header>
